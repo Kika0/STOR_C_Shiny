@@ -29,11 +29,11 @@ radioButtons(inputId="u", label="Choose threshold", choices=c(0.9,0.99,0.999), s
 hr(),
   fluidRow(
     column(6,
-           sliderInput("alpha",  "Choose dependence parameter \\(\\alpha\\)",min=0.05,max=0.99, step=0.01,value=0.5)),
+           sliderInput("alpha",  "Choose dependence parameter \\(\\alpha\\)",min=0.05,max=0.95, step=0.05,value=0.5)),
        column(3,
-           sliderInput("a_1","Choose dependence parameter \\(\\alpha\\)_1",min=0.05,max=0.99, step=0.01,value=0.5)),
+           sliderInput("a_1","Choose dependence parameter \\(\\alpha\\)_1",min=0.05,max=0.95, step=0.05,value=0.75)),
     column(3,
-           sliderInput("a_2","Choose dependence parameter \\(\\alpha_2\\)",min=0.05,max=0.99, step=0.01,value=0.5))),
+           sliderInput("a_2","Choose dependence parameter \\(\\alpha_2\\)",min=0.05,max=0.95, step=0.05,value=0.85))),
   hr(),
   fluidRow(
     
@@ -42,7 +42,7 @@ hr(),
            plotOutput("symmetric")
     ),
     column(6,
-           h2("Trivariate assymetric logistic GEV with \\(X-Y\\) and \\(X-Y\\) dependence"),
+           h2("Trivariate assymetric logistic GEV (\\(X-Y-Z\\)  dependence)"),
            plotOutput("assymetric")
     )
     
@@ -55,14 +55,13 @@ server <- function(input, output) {
 
  # output$ch <- renderPrint(as.numeric(input$u))
     output$symmetric <- renderPlot({
-      generate_dependent_X_Y_Z(N=50,abc=abc,dep=input$alpha) %>% plot_clusters(u=as.numeric(input$u),dep=input$alpha)
+      generate_dependent_X_Y_Z(N=5000,abc=abc,dep=input$alpha) %>% plot_clusters(u=as.numeric(input$u),dep=input$alpha)
     })
     
     output$assymetric <- renderPlot({
-      i <- match(input$a_1,seq(0.5,0.99,0.01))
-      j <- match(input$a_2,seq(0.5,0.99,0.01))
+      
       #generate_dependent_X_Y_Y_Z(N=50,abc=abc,dep=c(input$a_1,input$a_2)) %>% 
-       s[i,j,,] %>% as.data.frame() %>%  plot_clusters_2dep(u=as.numeric(input$u),dep=c(input$a_1,input$a_2))
+       all_comb[as.numeric(input$a_1)*20,as.numeric(input$a_2)*20,,] %>% as.data.frame() %>%  plot_clusters_2dep(u=as.numeric(input$u),dep=c(input$a_1,input$a_2))
     })
 }
 

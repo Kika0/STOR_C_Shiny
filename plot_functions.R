@@ -133,13 +133,14 @@ plot_clusters_2dep <- function(sims,u=0.9,dep) {
     labs(x = "", y = "") + ggtitle(TeX(paste0("$u=\\hat{F}_R^{-1}($",u,"$)$",","," $\\alpha_1=$",a,", $\\alpha_2=$",b))) +
     guides(fill=guide_legend(title="Density estimate")) 
 }
+
 #generate_dependent_X_Y_Y_Z(N=5000,abc=abc,dep=c(0.1,0.1)) %>% plot_clusters_2dep(u=0.9,dep=c(1/2,1/2))
-all_comb <- array(dim=c(95,95,500,3))
-dep_range <- seq(0.05,0.99,0.01)
-for (i in 1:length(dep_range)) {
-  for (j in 1:length(dep_range)) {
-    dep <- c(dep_range[i],dep_range[j])
-   all_comb[i,j,,] <-  array(unlist(generate_dependent_X_Y_Y_Z(N=500,abc=abc,dep=dep)),dim=c(50,3))
-  }
-}
-#saveRDS(all_comb,"all_comb.rda")
+# all_comb <- array(dim=c(20,20,5000,3))
+# dep_range <- seq(0.05,0.95,0.05)
+# for (i in 1:length(dep_range)) {
+#   for (j in 1:length(dep_range)) {
+#     depij <- c(dep_range[i],dep_range[j])
+#    all_comb[i,j,,] <-  array(unlist(generate_dependent_X_Y_Y_Z(N=5000,abc=abc,dep=depij)),dim=c(5000,3))
+#   }
+# }
+#  saveRDS(all_comb,"all_comb.rda")

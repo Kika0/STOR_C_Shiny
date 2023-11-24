@@ -44,12 +44,14 @@ server <- function(input, output) {
   
   # output$ch <- renderPrint(as.numeric(input$u))
   output$symmetric <- renderPlot({
+    #generate_dependent_X_Y_Z(N=5000,dep=1/2) %>% plot_clusters(u=as.numeric(0.9),dep=1/2) static
     generate_dependent_X_Y_Z(N=5000,dep=input$alpha) %>% plot_clusters(u=as.numeric(input$u),dep=input$alpha)
   })
   
   output$asymmetric <- renderPlot({
     
     #generate_dependent_X_Y_Y_Z(N=5000,dep=c(input$a_1,input$a_2)) %>% 
+    # all_comb[as.numeric(0.5)*20,as.numeric(0.5)*20,,] %>% as.data.frame() %>%  plot_clusters_2dep(u=as.numeric(0.9),dep=c(0.5,0.5)) static
     all_comb[as.numeric(input$a_1)*20,as.numeric(input$a_2)*20,,] %>% as.data.frame() %>%  plot_clusters_2dep(u=as.numeric(input$u),dep=c(input$a_1,input$a_2))
   })
 }

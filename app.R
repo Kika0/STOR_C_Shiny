@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(bslib)
 library(evd)
 library(tidyverse)
 source("plot_functions.R")
@@ -15,39 +16,47 @@ library(latex2exp)
 all_comb <- readRDS("all_comb.rda")
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+ui <- page_sidebar(
   withMathJax(),
     # Application title
-    titlePanel("Density plots of angular elements \\(W_1\\) and 
-                      \\(W_2\\) of random variables generated from EVD (extreme value distribution)"),
-hr(),
-fluidRow(
-  column(4,),
-  column(8,
-radioButtons(inputId="u", label="Choose threshold", choices=c(0.9,0.99,0.999), selected = NULL,inline=TRUE)
-)),
-hr(),
-  fluidRow(
-    column(6,
-           sliderInput("alpha",  "Choose dependence parameter \\(\\alpha\\)",min=0.05,max=0.95, step=0.05,value=0.5)),
-       column(3,
-           sliderInput("a_1","Choose dependence parameter \\(\\alpha\\)_1",min=0.05,max=0.95, step=0.05,value=0.75)),
-    column(3,
-           sliderInput("a_2","Choose dependence parameter \\(\\alpha_2\\)",min=0.05,max=0.95, step=0.05,value=0.85))),
+    title="Density plots of angular elements \\(W_1\\) and 
+                      \\(W_2\\) of random variables with (\\(X-Y-Z\\)  dependence) generated from Hüsler-Reiss distribution",
+sidebar = sidebar(
+  radioButtons(inputId="u", label="Choose threshold",choices=c(0.9,0.99,0.999), selected = NULL,inline=FALSE),
   hr(),
-  fluidRow(
-    
-    column(6,
-           h2("Trivariate symmetric logistic GEV"),
-           plotOutput("symmetric")
-    ),
-    column(6,
-           h2("Trivariate assymetric logistic GEV (\\(X-Y-Z\\)  dependence)"),
-           plotOutput("assymetric")
-    )
-    
-  ),
-   verbatimTextOutput("ch")
+  sliderInput("alpha",  "Choose dependence parameter \\(\\alpha\\)",min=0.05,max=0.95, step=0.05,value=0.5),
+  hr(),
+  sliderInput("a_1","Choose dependence parameter \\(\\alpha_1\\)",min=0.05,max=0.95, step=0.05,value=0.75),
+  sliderInput("a_2","Choose dependence parameter \\(\\alpha_2\\)",min=0.05,max=0.95, step=0.05,value=0.75),
+  hr()
+),
+layout_columns(
+card(card_header("Same dependence between pairs \\(\\alpha\\)"),
+     plotOutput("symmetric")
+     ),
+card(card_header("Different dependence between pairs \\(\\alpha_1\\) and \\(\\alpha_2\\)"),
+     plotOutput("asymmetric")
+)
+)
+# ),
+# 
+#   
+#   fluidRow(
+#     
+#     column(5,
+#            h2("Sample from Hüsler-Reiss distribution"),
+#            plotOutput("symmetric")
+#     ),
+#     column(2,
+#           
+#     ),
+#     column(5,
+#            h2("Trivariate assymetric logistic GEV (\\(X-Y-Z\\)  dependence)"),
+#            plotOutput("assymetric")
+#     )
+#     
+#   ),
+#    verbatimTextOutput("ch")
 )
 
 # Define server logic required to draw a histogram
@@ -58,7 +67,7 @@ server <- function(input, output) {
       generate_dependent_X_Y_Z(N=5000,abc=abc,dep=input$alpha) %>% plot_clusters(u=as.numeric(input$u),dep=input$alpha)
     })
     
-    output$assymetric <- renderPlot({
+    output$asymmetric <- renderPlot({
       
       #generate_dependent_X_Y_Y_Z(N=50,abc=abc,dep=c(input$a_1,input$a_2)) %>% 
        all_comb[as.numeric(input$a_1)*20,as.numeric(input$a_2)*20,,] %>% as.data.frame() %>%  plot_clusters_2dep(u=as.numeric(input$u),dep=c(input$a_1,input$a_2))
